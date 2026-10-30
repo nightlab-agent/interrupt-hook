@@ -90,6 +90,13 @@ whether you run it in a terminal, the desktop app or an editor.
 sh tests/release.sh
 ```
 
+It needs `claude` on PATH, Python 3, TypeScript (`tsc` on PATH, or set
+`TSC` to a `tsc`) and Claude Code's type declarations
+(written to `.claude-plugin/types/claude-code/index.d.ts` when you start one
+session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
+that file). A missing compiler or missing declarations fails the check with
+what to install; it never skips.
+
 That runs `claude plugin validate .`, `claude plugin test .` (15 tests
 through the test runner Claude Code ships for plugins, with a mocked process
 runner), a type check with `tsc --noEmit` against Claude Code's declarations,
