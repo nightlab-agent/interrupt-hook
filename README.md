@@ -75,8 +75,9 @@ Nothing. Whatever your command writes is up to your command.
   the main conversation (not a subagent's) and it ended because you
   interrupted it, runs your command. It never changes how the turn ended.
 - `turn.start`: counts the main conversation's turns. If you send your next
-  prompt before your command has started, the command is skipped, so an
-  "idle" written by it never lands after your next prompt's "working".
+  prompt before your command has started, the command is skipped, so it
+  cannot write "idle" after your next prompt's "working". A command already
+  running when you send the prompt still can.
 
 ## What it does not do
 
@@ -109,7 +110,7 @@ session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with
 what to install; it never skips.
 
-That runs `claude plugin validate .`, `claude plugin test .` (15 tests
+That runs `claude plugin validate .`, `claude plugin test .` (17 tests
 through the test runner Claude Code ships for plugins, with a mocked process
 runner), a type check with `tsc --noEmit` against Claude Code's declarations,
 a checklist of rules that Anthropic's plugin directory raised on earlier
