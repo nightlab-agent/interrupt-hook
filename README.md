@@ -78,8 +78,9 @@ Nothing. Whatever your command writes is up to your command.
 ## What it does not do
 
 It does not fire on a turn that ended with an answer or an error, or on a
-subagent's run. Seen working: Escape mid-turn, Claude Code 2.1.312 in a
-terminal on Linux (WSL), 2026-10-30 (the picture above). Not yet tried: Ctrl+C mid-turn, quitting
+subagent's run. Seen working: Escape mid-turn, and Escape while Claude was still thinking,
+before any reply text, Claude Code 2.1.312 in a terminal on Linux (WSL),
+2026-10-30 (the picture above shows the first). Not yet tried: Ctrl+C mid-turn, quitting
 Claude Code mid-turn, Windows without WSL, macOS, the desktop app and editors.
 
 If it does not run for you, open an issue with your Claude Code version and
