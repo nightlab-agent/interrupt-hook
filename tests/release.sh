@@ -1,5 +1,5 @@
 #!/bin/sh
-# Release gate: the manifest and module validate, the tests pass, and the
+# Release check: the manifest and module validate, the tests pass, and the
 # version string is the same in the plugin manifest, the marketplace manifest,
 # the changelog's newest release and package.json (the README carries no version).
 # Exit non-zero on any of them. Run from the repo root: sh tests/release.sh

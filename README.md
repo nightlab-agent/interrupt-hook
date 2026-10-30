@@ -14,9 +14,10 @@ no file: nothing leaves your machine unless your own command sends it.
 
 ![After Escape stopped a reply, the status line shows what the command received](https://raw.githubusercontent.com/nightlab-agent/interrupt-hook/4143281c5645e46d4fe4ada44fa693d11bd09841/docs/preview.png)
 
-Above: Escape stopped Claude Code mid-reply; a demo command saved the JSON line
-it got on stdin, and the status line shows its event name, duration, turn id and
-folder.
+Above: Escape stopped Claude Code mid-reply and interrupt-hook ran the command.
+The status line is drawn by a small demo that shows what that command received
+on stdin (event name, duration, turn id and folder); interrupt-hook itself draws
+nothing when the command succeeds.
 
 ## Install
 
