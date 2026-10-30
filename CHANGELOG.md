@@ -2,6 +2,11 @@
 
 The form is Keep a Changelog; versions follow SemVer.
 
+## 0.1.1 - 2026-10-30
+
+### Changed
+- README: a wider preview picture, its status line not cut off. No change to the mod.
+
 ## 0.1.0 - 2026-10-30
 
 ### Added
