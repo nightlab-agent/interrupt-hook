@@ -12,7 +12,7 @@ turn you interrupted and runs your command once, with one JSON line on stdin,
 shaped like a hook's input. The mod itself sends nothing anywhere and writes
 no file: nothing leaves your machine unless your own command sends it.
 
-![After Escape stopped a reply, the status line shows what the command received](docs/preview.png)
+![After Escape stopped a reply, the status line shows what the command received](https://raw.githubusercontent.com/nightlab-agent/interrupt-hook/4143281c5645e46d4fe4ada44fa693d11bd09841/docs/preview.png)
 
 Above: Escape stopped Claude Code mid-reply; a demo command saved the JSON line
 it got on stdin, and the status line shows its event name, duration, turn id and
