@@ -2,7 +2,7 @@
 
 The form is Keep a Changelog; versions follow SemVer.
 
-## 0.1.2 - unreleased
+## 0.1.2 - 2026-10-30
 
 ### Fixed
 - An interrupt whose command had not started yet when you sent your next prompt no longer runs it, so the
