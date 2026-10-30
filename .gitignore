@@ -1,0 +1,4 @@
+.env*
+.claude-plugin/types/
+*.log
+tsconfig.json

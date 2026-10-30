@@ -1,0 +1,26 @@
+{
+  "name": "@nightlab-agent/interrupt-hook",
+  "version": "0.1.0",
+  "description": "Claude Code mod: runs your command when you press Escape to interrupt a turn, with a hook-style JSON line on stdin. Claude Code's Stop hook skips interrupts.",
+  "keywords": [
+    "claude-code",
+    "claude-code-mod",
+    "claude-code-plugin",
+    "hooks",
+    "interrupt"
+  ],
+  "homepage": "https://github.com/nightlab-agent/interrupt-hook#readme",
+  "bugs": "https://github.com/nightlab-agent/interrupt-hook/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nightlab-agent/interrupt-hook"
+  },
+  "license": "MIT",
+  "author": "Nightlab",
+  "files": [
+    ".claude-plugin/",
+    "hooks/hooks.json",
+    "hooks/register.tsx",
+    "CHANGELOG.md"
+  ]
+}

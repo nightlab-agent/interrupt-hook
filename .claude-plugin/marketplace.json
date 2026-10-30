@@ -1,0 +1,16 @@
+{
+  "name": "nightlab-interrupt-hook",
+  "owner": {
+    "name": "Nightlab"
+  },
+  "plugins": [
+    {
+      "name": "interrupt-hook",
+      "source": "./",
+      "description": "Runs your command when you interrupt a turn, with a hook-style JSON line on stdin.",
+      "version": "0.1.0",
+      "category": "productivity"
+    }
+  ],
+  "description": "One mod: a hook for interrupts in Claude Code, by Nightlab."
+}
