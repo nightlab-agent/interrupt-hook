@@ -23,12 +23,20 @@ export const timeoutMs = (value: unknown): number => {
 
 export const register: Register = (on, options) => {
   const command = String(options.command ?? '').trim()
+  // Main-loop turns started so far: an interrupt whose command has not started when the next one begins is stale.
+  let mainTurns = 0
+
+  on('turn.start', async (_, e, next) => {
+    if (e.agentId === undefined) mainTurns++
+    return next(e)
+  })
 
   on('turn.complete', async ($, e, next) => {
     const done = await next(e)
     // Only the main loop's turns: a subagent's run ending is not the person interrupting.
     if (e.agentId !== undefined || !e.isAborted || command === '') return done
     // Not awaited: the turn ends now and the command runs on after it, so a slow command never holds the end.
+    const turnsAtEnd = mainTurns
     void (async () => {
       try {
         const payload: Payload = {
@@ -38,6 +46,8 @@ export const register: Register = (on, options) => {
           turn_id: e.turnId,
           duration_ms: e.durationMs,
         }
+        // The person sent the next prompt while the lookups ran: "idle" would land after "working".
+        if (mainTurns !== turnsAtEnd) return
         const init = { stdin: JSON.stringify(payload) + '\n', timeoutMs: timeoutMs(options.timeout) }
         let result: { exitCode: number; stderr: string }
         try {

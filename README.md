@@ -74,6 +74,9 @@ Nothing. Whatever your command writes is up to your command.
 - `turn.complete`: after Claude Code has ended the turn, if it was a turn of
   the main conversation (not a subagent's) and it ended because you
   interrupted it, runs your command. It never changes how the turn ended.
+- `turn.start`: counts the main conversation's turns. If you send your next
+  prompt before your command has started, the command is skipped, so an
+  "idle" written by it never lands after your next prompt's "working".
 
 ## What it does not do
 
@@ -82,6 +85,13 @@ subagent's run. Seen working: Escape mid-turn, and Escape while Claude was still
 before any reply text, Claude Code 2.1.312 in a terminal on Linux (WSL),
 2026-10-30 (the picture above shows the first). Not yet tried: Ctrl+C mid-turn, quitting
 Claude Code mid-turn, Windows without WSL, macOS, the desktop app and editors.
+
+Two known limits, from how Claude Code passes the event on; neither seen in a real session:
+- A turn ended by another plugin, or by a permission deny that stops the
+  turn, reaches the mod the same way as your Escape, so your command may run
+  then too. Claude Code gives the mod no way to tell them apart.
+- A plugin your administrator manages that ends the turn's event without
+  passing it on keeps your command from running.
 
 If it does not run for you, open an issue with your Claude Code version and
 whether you run it in a terminal, the desktop app or an editor.
