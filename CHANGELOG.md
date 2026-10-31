@@ -2,6 +2,15 @@
 
 The form is Keep a Changelog; versions follow SemVer.
 
+## 0.1.3 - 2026-10-31
+
+### Fixed
+- Toasts no longer repeat the mod's name: Claude Code already puts it in front, so they read
+  "interrupt-hook: interrupt-hook: ..." before. Test: hooks/register.test.tsx.
+
+### Changed
+- README: a link to the Nightlab YouTube channel.
+
 ## 0.1.2 - 2026-10-30
 
 ### Fixed
