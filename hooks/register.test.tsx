@@ -118,7 +118,9 @@ test('a command that exits 0 gives no toast (the comparison case)', OPT, async (
 test('a command that exits non-zero gives one toast with the exit code and its first stderr line', OPT, async ($, on) => {
   const { toasts } = world(on, { exit: 2, stderr: 'no such host\nmore' })
   await end($, { reason: 'aborted' })
-  expect(toasts).toEqual(['interrupt-hook: the command exited 2: no such host'])
+  expect(toasts).toEqual(['the command exited 2: no such host'])
+  // The engine puts the mod's name before every toast; the text must not carry it again.
+  expect(toasts.some(t => t.startsWith('interrupt-hook:'))).toBe(false)
 })
 
 test('with no command set, an interrupted turn runs nothing', { options: {} }, async ($, on) => {

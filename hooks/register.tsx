@@ -54,12 +54,12 @@ export const register: Register = (on, options) => {
           result = await $.process.run(argv(command), init)
         } catch (err) {
           // not started (no sh) or still running at the timeout: the error text says which
-          $.ui.toast(`interrupt-hook: the command did not finish: ${String(err).slice(0, 80)}`)
+          $.ui.toast(`the command did not finish: ${String(err).slice(0, 80)}`)
           return
         }
         if (result.exitCode !== 0) {
           const why = result.stderr.trim().split(/\r?\n/)[0]?.slice(0, 80) ?? ''
-          $.ui.toast(`interrupt-hook: the command exited ${result.exitCode}${why ? `: ${why}` : ''}`)
+          $.ui.toast(`the command exited ${result.exitCode}${why ? `: ${why}` : ''}`)
         }
       } catch {
         // a failure of its own never changes how the turn ended

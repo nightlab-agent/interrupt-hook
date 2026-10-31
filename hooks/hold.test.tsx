@@ -56,7 +56,7 @@ test('a CRLF stderr gives a toast without a trailing carriage return',
   const w = world(on, { exit: 2, stderr: 'no such host\r\nmore\r\n' })
   await end($, 'aborted')
   await settle()
-  expect(w.toasts).toEqual(['interrupt-hook: the command exited 2: no such host'])
+  expect(w.toasts).toEqual(['the command exited 2: no such host'])
 })
 
 test('an LF stderr gives the first line',
@@ -64,5 +64,5 @@ test('an LF stderr gives the first line',
   const w = world(on, { exit: 2, stderr: 'no such host\nmore\n' })
   await end($, 'aborted')
   await settle()
-  expect(w.toasts).toEqual(['interrupt-hook: the command exited 2: no such host'])
+  expect(w.toasts).toEqual(['the command exited 2: no such host'])
 })
