@@ -2,6 +2,12 @@
 
 The form is Keep a Changelog; versions follow SemVer.
 
+## Unreleased
+
+- Tests: a second interrupt while the first command still runs (each runs once, with its own turn id),
+  and a subagent's turn starting after an interrupt (not the next prompt: the command still runs). No change
+  to the code.
+
 ## 0.1.3 - 2026-10-31
 
 ### Fixed
