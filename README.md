@@ -21,9 +21,9 @@ stoppage occurred due to a user interrupt"
 ([hooks reference](https://code.claude.com/docs/en/hooks)), so a status light,
 dashboard or sound driven by hooks keeps saying "working" until your next
 prompt ([anthropics/claude-code#9516](https://github.com/anthropics/claude-code/issues/9516)).
-This mod (a plugin that adds behaviour to Claude Code) watches for the end of a
+This plugin watches for the end of a
 turn you interrupted and runs your command once, with one JSON line on stdin,
-shaped like a hook's input. The mod itself sends nothing anywhere and writes
+shaped like a hook's input. The plugin itself sends nothing anywhere and writes
 no file: nothing leaves your machine unless your own command sends it.
 
 ## Install
@@ -96,8 +96,8 @@ Claude Code mid-turn, Windows without WSL, macOS, the desktop app and editors.
 
 Two known limits, from how Claude Code passes the event on; neither seen in a real session:
 - A turn ended by another plugin, or by a permission deny that stops the
-  turn, reaches the mod the same way as your Escape, so your command may run
-  then too. Claude Code gives the mod no way to tell them apart.
+  turn, reaches the plugin the same way as your Escape, so your command may run
+  then too. Claude Code gives the plugin no way to tell them apart.
 - A plugin your administrator manages that ends the turn's event without
   passing it on keeps your command from running.
 
