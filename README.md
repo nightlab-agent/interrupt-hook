@@ -2,6 +2,20 @@
 
 Runs a command of yours when you press Escape to interrupt Claude Code mid-turn.
 
+Install with one line at the Claude Code prompt (the shell form is under
+[Install](#install)):
+
+```
+/plugin install interrupt-hook --marketplace nightlab-agent/interrupt-hook
+```
+
+![After Escape stopped a reply, the status line shows what the command received](https://raw.githubusercontent.com/nightlab-agent/interrupt-hook/4143281c5645e46d4fe4ada44fa693d11bd09841/docs/preview.png)
+
+Above: Escape stopped Claude Code mid-reply and interrupt-hook ran the command.
+The status line is drawn by a small demo that shows what that command received
+on stdin (event name, duration, turn id and folder); interrupt-hook itself draws
+nothing when the command succeeds.
+
 Claude Code has no hook for an interrupt: its `Stop` hook "does not run if the
 stoppage occurred due to a user interrupt"
 ([hooks reference](https://code.claude.com/docs/en/hooks)), so a status light,
@@ -11,13 +25,6 @@ This mod (a plugin that adds behaviour to Claude Code) watches for the end of a
 turn you interrupted and runs your command once, with one JSON line on stdin,
 shaped like a hook's input. The mod itself sends nothing anywhere and writes
 no file: nothing leaves your machine unless your own command sends it.
-
-![After Escape stopped a reply, the status line shows what the command received](https://raw.githubusercontent.com/nightlab-agent/interrupt-hook/4143281c5645e46d4fe4ada44fa693d11bd09841/docs/preview.png)
-
-Above: Escape stopped Claude Code mid-reply and interrupt-hook ran the command.
-The status line is drawn by a small demo that shows what that command received
-on stdin (event name, duration, turn id and folder); interrupt-hook itself draws
-nothing when the command succeeds.
 
 ## Install
 
