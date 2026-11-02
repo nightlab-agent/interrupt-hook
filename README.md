@@ -1,6 +1,8 @@
 # interrupt-hook
 
-Runs a command of yours when you press Escape to interrupt Claude Code mid-turn.
+Press Escape mid-turn and Claude Code skips its Stop hook, so a status light
+or sound that waits for Stop keeps saying "working" until your next prompt.
+This plugin runs a command of yours when you stop a turn with Escape.
 
 Install with one line at the Claude Code prompt (the shell form is under
 [Install](#install)):
