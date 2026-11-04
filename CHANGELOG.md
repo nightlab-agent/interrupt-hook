@@ -4,6 +4,10 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ## Unreleased
 
+- An interrupt no longer writes over your next prompt in three more cases: that prompt's UserPromptSubmit hook
+  already wrote "working" but the turn had not started, the next turn started while the interrupted one was still
+  ending, or `/clear` or a resume moved to another session (the command used to run with the new session's id and
+  the old turn's id). Tests: tests/ordering.test.tsx.
 - Tests: a second interrupt while the first command still runs (each runs once, with its own turn id),
   and a subagent's turn starting after an interrupt (not the next prompt: the command still runs). No change
   to the code.

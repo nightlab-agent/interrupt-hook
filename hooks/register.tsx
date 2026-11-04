@@ -23,20 +23,35 @@ export const timeoutMs = (value: unknown): number => {
 
 export const register: Register = (on, options) => {
   const command = String(options.command ?? '').trim()
-  // Main-loop turns started so far: an interrupt whose command has not started when the next one begins is stale.
-  let mainTurns = 0
+  // Prompts, main-loop turns and session switches so far: an interrupt whose command has not started when one of
+  // these comes is stale.
+  let moves = 0
+
+  // Before the turn: this prompt's UserPromptSubmit hooks run inside next(e) and turn.start comes after them.
+  on('prompt.submit', async (_, e, next) => {
+    moves++
+    return next(e)
+  })
 
   on('turn.start', async (_, e, next) => {
-    if (e.agentId === undefined) mainTurns++
+    if (e.agentId === undefined) moves++
+    return next(e)
+  })
+
+  // A /clear or a resume goes on under another session: the interrupt's own id and folder are gone. Quitting is not a
+  // switch, so the command still gets its chance.
+  on('session.end', async (_, e, next) => {
+    if (e.reason === 'clear' || e.reason === 'resume') moves++
     return next(e)
   })
 
   on('turn.complete', async ($, e, next) => {
+    // Read before next(e): the next turn can start while this one is ending.
+    const movesAtEnd = moves
     const done = await next(e)
     // Only the main loop's turns: a subagent's run ending is not the person interrupting.
     if (e.agentId !== undefined || !e.isAborted || command === '') return done
     // Not awaited: the turn ends now and the command runs on after it, so a slow command never holds the end.
-    const turnsAtEnd = mainTurns
     void (async () => {
       try {
         const payload: Payload = {
@@ -46,8 +61,8 @@ export const register: Register = (on, options) => {
           turn_id: e.turnId,
           duration_ms: e.durationMs,
         }
-        // The person sent the next prompt while the lookups ran: "idle" would land after "working".
-        if (mainTurns !== turnsAtEnd) return
+        // The person moved on while the lookups ran: "idle" would land after "working", or under the wrong session.
+        if (moves !== movesAtEnd) return
         const init = { stdin: JSON.stringify(payload) + '\n', timeoutMs: timeoutMs(options.timeout) }
         let result: { exitCode: number; stderr: string }
         try {
