@@ -87,10 +87,11 @@ Nothing. Whatever your command writes is up to your command.
   conversation's turns. If you send your next prompt before your command has
   started, the command is skipped, so it cannot write "idle" after your next
   prompt's "working". A command already running when you send the prompt still
-  can.
+  can. If a prompt was queued over the interrupted turn, the command waits one
+  second for that prompt's turn to start and is skipped if it does.
 - `session.end`: on `/clear` or a resume, a command that has not started is
-  skipped, so it never runs under the new session's id. Quitting does not skip
-  it.
+  skipped, so it never runs under the new session's id. On quitting the plugin
+  does not skip it; whether it finishes before Claude Code exits is not yet tried.
 
 ## What it does not do
 
@@ -100,12 +101,14 @@ before any reply text, Claude Code 2.1.312 in a terminal on Linux (WSL),
 2026-10-30 (the picture above shows the first). Not yet tried: Ctrl+C mid-turn, quitting
 Claude Code mid-turn, Windows without WSL, macOS, the desktop app and editors.
 
-Two known limits, from how Claude Code passes the event on; neither seen in a real session:
+Three known limits, from how Claude Code passes the event on; none seen in a real session:
 - A turn ended by another plugin, or by a permission deny that stops the
   turn, reaches the plugin the same way as your Escape, so your command may run
   then too. Claude Code gives the plugin no way to tell them apart.
 - A plugin your administrator manages that ends the turn's event without
   passing it on keeps your command from running.
+- A queued prompt whose turn takes more than a second to start can still have
+  "idle" written after its "working".
 
 If it does not run for you, open an issue with your Claude Code version and
 whether you run it in a terminal, the desktop app or an editor.
@@ -123,7 +126,7 @@ session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with
 what to install; it never skips.
 
-That runs `claude plugin validate .`, `claude plugin test .` (28 tests
+That runs `claude plugin validate .`, `claude plugin test .` (34 tests
 through the test runner Claude Code ships for plugins, with a mocked process
 runner), a type check with `tsc --noEmit` against Claude Code's declarations,
 a checklist of rules that Anthropic's plugin directory raised on earlier

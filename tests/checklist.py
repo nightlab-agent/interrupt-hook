@@ -40,11 +40,6 @@ check((ROOT / 'LICENSE').is_file(), 'a LICENSE file')
 readme = (ROOT / 'README.md').read_text() if (ROOT / 'README.md').is_file() else ''
 words = len(re.findall(r'\w+', readme))
 check(words >= 40, 'README has 40+ words', f'{words} words')
-stated = re.search(r'claude plugin test \.` \((\d+) tests', readme)
-declared = sum(len(re.findall(r'^test\(', p.read_text(encoding='utf-8'), re.M))
-               for folder in ('hooks', 'tests') for p in (ROOT / folder).glob('*.test.tsx'))
-check(stated is not None and int(stated.group(1)) == declared, "README's test count is the suite's",
-      f'README {stated.group(1) if stated else "none"}, suite {declared}')
 check(re.search(r'nothing\s+leaves\s+(the|your)\s+machine|everything\s+stays\s+on\s+(the|your)\s+machine', readme, re.I) is not None,
       'README says plainly that nothing leaves the machine', 'only true if no hook sends data')
 check(re.search(r'^#+ .*(writes|files)', readme, re.I | re.M) is not None,

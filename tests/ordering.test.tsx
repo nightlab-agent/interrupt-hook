@@ -45,7 +45,7 @@ const world = (on: On, hold: 'complete' | 'id') => {
   })
   on('prompt.submit', async (_, e) => {
     // UserPromptSubmit has written working, but another settings hook still waits.
-    // Engine declarations: TurnStartInput, index.d.ts:14381-14383.
+    // Engine declarations: TurnStartInput, index.d.ts:14381-14383, Claude Code 2.1.312.
     status.push('working')
     promptEntered.open()
     await promptRelease.wait
@@ -110,7 +110,7 @@ test('quitting is not a session switch: the pending command still runs', OPT, as
   const w = world(on, 'id')
   await interrupt($)
   await w.entered.wait
-  await $.session.end({ reason: 'other', sessionId: 'sess-1', resume: { id: 'sess-1' } })
+  await $.session.end({ reason: 'prompt_input_exit', sessionId: 'sess-1', resume: { id: 'sess-1' } })
   w.release.open()
   await settle()
   expect(w.runs.length).toBe(1)

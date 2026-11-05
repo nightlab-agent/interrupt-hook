@@ -26,11 +26,21 @@ export const register: Register = (on, options) => {
   // Prompts, main-loop turns and session switches so far: an interrupt whose command has not started when one of
   // these comes is stale.
   let moves = 0
+  // The running turn a prompt was typed over. That prompt's UserPromptSubmit hooks already ran, so when the turn is cut
+  // its own turn may be about to start.
+  let queuedOn: string | undefined
 
   // Before the turn: this prompt's UserPromptSubmit hooks run inside next(e) and turn.start comes after them.
   on('prompt.submit', async (_, e, next) => {
     moves++
-    return next(e)
+    if (e.turnId !== undefined) queuedOn = e.turnId
+    const entered = await next(e)
+    // Dropped beneath: no turn is coming.
+    if ('drop' in entered) {
+      moves--
+      if (queuedOn === e.turnId) queuedOn = undefined
+    }
+    return entered
   })
 
   on('turn.start', async (_, e, next) => {
@@ -46,8 +56,11 @@ export const register: Register = (on, options) => {
   })
 
   on('turn.complete', async ($, e, next) => {
-    // Read before next(e): the next turn can start while this one is ending.
+    // Read before next(e), in case the next turn starts while this turn's end chain still runs (modelled in
+    // tests/ordering.test.tsx, not seen in a session).
     const movesAtEnd = moves
+    const queued = e.agentId === undefined && queuedOn === e.turnId
+    if (e.agentId === undefined) queuedOn = undefined
     const done = await next(e)
     // Only the main loop's turns: a subagent's run ending is not the person interrupting.
     if (e.agentId !== undefined || !e.isAborted || command === '') return done
@@ -61,6 +74,8 @@ export const register: Register = (on, options) => {
           turn_id: e.turnId,
           duration_ms: e.durationMs,
         }
+        // A queued prompt may start its turn now, or come back to the composer: give it a moment to say which.
+        if (queued) await $.clock.sleep(1000).catch(() => {})
         // The person moved on while the lookups ran: "idle" would land after "working", or under the wrong session.
         if (moves !== movesAtEnd) return
         const init = { stdin: JSON.stringify(payload) + '\n', timeoutMs: timeoutMs(options.timeout) }

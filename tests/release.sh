@@ -20,5 +20,12 @@ versions = {'plugin.json': plugin, 'marketplace.json': market, 'CHANGELOG.md': c
 if len(set(versions.values())) != 1:
     sys.exit(f"version strings differ: {versions}")
 print(f"version check: all four say {plugin}")
+import pathlib
+stated = re.search(r'claude plugin test \.` \((\d+) tests', open('README.md').read())
+declared = sum(len(re.findall(r'^test\(', p.read_text(encoding='utf-8'), re.M))
+               for folder in ('hooks', 'tests') for p in pathlib.Path(folder).glob('*.test.tsx'))
+if stated is None or int(stated.group(1)) != declared:
+    sys.exit(f"README's test count is not the suite's: README {stated and stated.group(1)}, suite {declared}")
+print(f"test count check: README and suite say {declared}")
 PY
 echo "release check: validate, test, type check, checklist and version check passed"
