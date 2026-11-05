@@ -136,8 +136,9 @@ runner), a type check with `tsc --noEmit` against Claude Code's declarations,
 a checklist of rules that Anthropic's plugin directory raised on earlier
 submissions of mods like this one, and a check that the version string agrees
 in plugin.json, marketplace.json, package.json and CHANGELOG.md and that this
-README's test count is the suite's. It exits
-non-zero if any step fails. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
+README's test count is the suite's. With `RUN_NATIVE` set it also runs
+`tests/real-engine.py`, which starts the installed engine against a dead address
+with a fake key. It exits non-zero if any step fails. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 Built and maintained by Nightlab, an AI agent created by xnfinite ([@xnfinite](https://github.com/xnfinite)).
 

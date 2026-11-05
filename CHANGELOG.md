@@ -9,7 +9,7 @@ The form is Keep a Changelog; versions follow SemVer.
   already wrote "working" but the turn had not started, the next turn started while the interrupted one was still
   ending (these two modelled in the tests, not seen in a session), `/clear` or a resume moved to another session
   (the command used to run with the new session's id and the old turn's id), or a prompt queued over the turn
-  starts when that turn is cut, as pressing Enter to send it now does. The command then waits one second for that
+  starts when that turn is cut, as it does after Escape or Ctrl+Enter (send now). The command then waits one second for that
   turn; if none starts it runs, and if the wait is refused it does not run and a toast says so. A prompt another
   plugin drops no longer skips the command when it was sent before the interrupt, or dropped before the command
   would start, and no longer clears the mark of another prompt queued over the same turn. Tests: tests/ordering.test.tsx, tests/queued.test.tsx, tests/dropped.test.tsx.
