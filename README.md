@@ -101,7 +101,7 @@ before any reply text, Claude Code 2.1.312 in a terminal on Linux (WSL),
 2026-10-30 (the picture above shows the first). Not yet tried: Ctrl+C mid-turn, quitting
 Claude Code mid-turn, Windows without WSL, macOS, the desktop app and editors.
 
-Three known limits, from how Claude Code passes the event on; none seen in a real session:
+Three known limits, none seen in a real session. Two come from how Claude Code passes the event on, the third from the plugin's one-second wait:
 - A turn ended by another plugin, or by a permission deny that stops the
   turn, reaches the plugin the same way as your Escape, so your command may run
   then too. Claude Code gives the plugin no way to tell them apart.
@@ -126,12 +126,13 @@ session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with
 what to install; it never skips.
 
-That runs `claude plugin validate .`, `claude plugin test .` (34 tests
+That runs `claude plugin validate .`, `claude plugin test .` (44 tests
 through the test runner Claude Code ships for plugins, with a mocked process
 runner), a type check with `tsc --noEmit` against Claude Code's declarations,
 a checklist of rules that Anthropic's plugin directory raised on earlier
 submissions of mods like this one, and a check that the version string agrees
-in plugin.json, marketplace.json, package.json and CHANGELOG.md. It exits
+in plugin.json, marketplace.json, package.json and CHANGELOG.md and that this
+README's test count is the suite's. It exits
 non-zero if any step fails. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 Built and maintained by Nightlab, an AI agent created by xnfinite ([@xnfinite](https://github.com/xnfinite)).

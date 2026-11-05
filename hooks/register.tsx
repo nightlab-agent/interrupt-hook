@@ -23,24 +23,36 @@ export const timeoutMs = (value: unknown): number => {
 
 export const register: Register = (on, options) => {
   const command = String(options.command ?? '').trim()
-  // Prompts, main-loop turns and session switches so far: an interrupt whose command has not started when one of
-  // these comes is stale.
+  // Prompts that went in, main-loop turns and session switches so far: an interrupt whose command has not started when
+  // one of these comes is stale. It only counts up: a drop taken off it could cancel the prompt that came after.
   let moves = 0
-  // The running turn a prompt was typed over. That prompt's UserPromptSubmit hooks already ran, so when the turn is cut
-  // its own turn may be about to start.
-  let queuedOn: string | undefined
+  // Each prompt gets a number; those a plugin beneath is still deciding on stay here. One that came after the interrupt
+  // may be writing "working" now, so the command waits on it no less than on a prompt already in.
+  let submitted = 0
+  const deciding = new Set<number>()
+  // How many prompts are held over each running turn. Their UserPromptSubmit hooks already ran, so when the turn is cut
+  // one's own turn may be about to start.
+  const held = new Map<string, number>()
 
   // Before the turn: this prompt's UserPromptSubmit hooks run inside next(e) and turn.start comes after them.
   on('prompt.submit', async (_, e, next) => {
-    moves++
-    if (e.turnId !== undefined) queuedOn = e.turnId
-    const entered = await next(e)
-    // Dropped beneath: no turn is coming.
-    if ('drop' in entered) {
-      moves--
-      if (queuedOn === e.turnId) queuedOn = undefined
+    const id = ++submitted
+    deciding.add(id)
+    const over = e.turnId
+    if (over !== undefined) held.set(over, (held.get(over) ?? 0) + 1)
+    try {
+      const entered = await next(e)
+      if (entered.drop === undefined) moves++
+      // Dropped beneath: no turn is coming.
+      else if (over !== undefined && held.has(over)) {
+        const left = (held.get(over) ?? 1) - 1
+        if (left > 0) held.set(over, left)
+        else held.delete(over)
+      }
+      return entered
+    } finally {
+      deciding.delete(id)
     }
-    return entered
   })
 
   on('turn.start', async (_, e, next) => {
@@ -59,8 +71,9 @@ export const register: Register = (on, options) => {
     // Read before next(e), in case the next turn starts while this turn's end chain still runs (modelled in
     // tests/ordering.test.tsx, not seen in a session).
     const movesAtEnd = moves
-    const queued = e.agentId === undefined && queuedOn === e.turnId
-    if (e.agentId === undefined) queuedOn = undefined
+    const submittedAtEnd = submitted
+    const queued = e.agentId === undefined && held.has(e.turnId)
+    held.delete(e.turnId)
     const done = await next(e)
     // Only the main loop's turns: a subagent's run ending is not the person interrupting.
     if (e.agentId !== undefined || !e.isAborted || command === '') return done
@@ -75,9 +88,10 @@ export const register: Register = (on, options) => {
           duration_ms: e.durationMs,
         }
         // A queued prompt may start its turn now, or come back to the composer: give it a moment to say which.
-        if (queued) await $.clock.sleep(1000).catch(() => {})
+        // A wait that was refused has not waited, so the command stays out of that prompt's way (the catch at the end).
+        if (queued) await $.clock.sleep(1000)
         // The person moved on while the lookups ran: "idle" would land after "working", or under the wrong session.
-        if (moves !== movesAtEnd) return
+        if (moves !== movesAtEnd || [...deciding].some(id => id > submittedAtEnd)) return
         const init = { stdin: JSON.stringify(payload) + '\n', timeoutMs: timeoutMs(options.timeout) }
         let result: { exitCode: number; stderr: string }
         try {
