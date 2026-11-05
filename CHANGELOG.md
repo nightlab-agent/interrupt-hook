@@ -2,7 +2,7 @@
 
 The form is Keep a Changelog; versions follow SemVer.
 
-## Unreleased
+## 0.1.4 - 2026-11-05
 
 ### Fixed
 - An interrupt no longer writes over your next prompt in four more cases: that prompt's UserPromptSubmit hook
