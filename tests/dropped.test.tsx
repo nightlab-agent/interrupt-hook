@@ -201,3 +201,17 @@ test('a refused wait does not put the command ahead of a queued prompt', OPT, as
   await settle()
   expect(runs).toEqual([])
 })
+
+test('a refused wait says the command did not run', OPT, async ($, on) => {
+  const toasts: string[] = []
+  on('turn.complete', (_, e) => ({ text: e.answer }))
+  on('session.id', () => ({ value: 'sess-1' }))
+  on('session.cwd', () => ({ value: '/work/first' }))
+  on('prompt.submit', (_, e) => ({ text: e.text }))
+  on('ui.toast', (_, e) => { toasts.push(e.text); return { value: undefined } })
+  on('clock.sleep', () => ({ deny: 'timer unavailable' }))
+  await submit($, 'B', 'turn-1')
+  await interrupt($)
+  await settle()
+  expect(toasts).toEqual(['the command did not run: the wait for your queued prompt was refused'])
+})

@@ -27,10 +27,10 @@ export const register: Register = (on, options) => {
   // one of these comes is stale. It only counts up: a drop taken off it could cancel the prompt that came after.
   let moves = 0
   // Each prompt gets a number; those a plugin beneath is still deciding on stay here. One that came after the interrupt
-  // may be writing "working" now, so the command waits on it no less than on a prompt already in.
+  // may be writing "working" now, so it stops the command as a prompt already in does.
   let submitted = 0
   const deciding = new Set<number>()
-  // How many prompts are held over each running turn. Their UserPromptSubmit hooks already ran, so when the turn is cut
+  // How many prompts are held over each running turn. Their UserPromptSubmit hooks ran or are running, so when the turn is cut
   // one's own turn may be about to start.
   const held = new Map<string, number>()
 
@@ -88,9 +88,16 @@ export const register: Register = (on, options) => {
           duration_ms: e.durationMs,
         }
         // A queued prompt may start its turn now, or come back to the composer: give it a moment to say which.
-        // A wait that was refused has not waited, so the command stays out of that prompt's way (the catch at the end).
-        if (queued) await $.clock.sleep(1000)
-        // The person moved on while the lookups ran: "idle" would land after "working", or under the wrong session.
+        // A wait that was refused has not waited, so the command stays out of that prompt's way, and says so.
+        if (queued) {
+          try {
+            await $.clock.sleep(1000)
+          } catch {
+            $.ui.toast('the command did not run: the wait for your queued prompt was refused')
+            return
+          }
+        }
+        // The person moved on during the lookups or the wait: "idle" would land after "working", or under the wrong session.
         if (moves !== movesAtEnd || [...deciding].some(id => id > submittedAtEnd)) return
         const init = { stdin: JSON.stringify(payload) + '\n', timeoutMs: timeoutMs(options.timeout) }
         let result: { exitCode: number; stderr: string }

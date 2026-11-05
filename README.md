@@ -101,7 +101,7 @@ before any reply text, Claude Code 2.1.312 in a terminal on Linux (WSL),
 2026-10-30 (the picture above shows the first). Not yet tried: Ctrl+C mid-turn, quitting
 Claude Code mid-turn, Windows without WSL, macOS, the desktop app and editors.
 
-Three known limits, none seen in a real session. Two come from how Claude Code passes the event on, the third from the plugin's one-second wait:
+Five known limits, none seen in a real session. Two come from how Claude Code passes the event on, the others from the plugin's own wait and checks:
 - A turn ended by another plugin, or by a permission deny that stops the
   turn, reaches the plugin the same way as your Escape, so your command may run
   then too. Claude Code gives the plugin no way to tell them apart.
@@ -109,6 +109,10 @@ Three known limits, none seen in a real session. Two come from how Claude Code p
   passing it on keeps your command from running.
 - A queued prompt whose turn takes more than a second to start can still have
   "idle" written after its "working".
+- If that one-second wait is refused (the plugin reloaded, or another plugin
+  denied the timer), the command does not run and a toast says so.
+- A prompt typed after the interrupt and still held by another plugin when the
+  command would start skips the command, even if that plugin then drops it.
 
 If it does not run for you, open an issue with your Claude Code version and
 whether you run it in a terminal, the desktop app or an editor.
@@ -126,7 +130,7 @@ session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with
 what to install; it never skips.
 
-That runs `claude plugin validate .`, `claude plugin test .` (44 tests
+That runs `claude plugin validate .`, `claude plugin test .` (45 tests
 through the test runner Claude Code ships for plugins, with a mocked process
 runner), a type check with `tsc --noEmit` against Claude Code's declarations,
 a checklist of rules that Anthropic's plugin directory raised on earlier
