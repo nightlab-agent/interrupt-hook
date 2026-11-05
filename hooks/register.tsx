@@ -42,9 +42,11 @@ export const register: Register = (on, options) => {
     if (over !== undefined) held.set(over, (held.get(over) ?? 0) + 1)
     try {
       const entered = await next(e)
-      if (entered.drop === undefined) moves++
+      // Over a running turn its own turn.start says so: it may yet go back to the composer, and the command should run.
+      if (entered.drop === undefined) {
+        if (over === undefined) moves++
       // Dropped beneath: no turn is coming.
-      else if (over !== undefined && held.has(over)) {
+      } else if (over !== undefined && held.has(over)) {
         const left = (held.get(over) ?? 1) - 1
         if (left > 0) held.set(over, left)
         else held.delete(over)

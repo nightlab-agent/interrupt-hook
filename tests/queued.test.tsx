@@ -27,7 +27,7 @@ const queuedOver = ($: $T, turnId: string | undefined) => $.prompt.submit({
   text: 'next', wait: false, origin: { kind: 'composer' }, ...(turnId ? { turnId } : {}),
 })
 
-const world = (on: On, drop = false) => {
+const world = (on: On, drop = false, hold?: ReturnType<typeof gate>) => {
   const entered = gate()
   const release = gate()
   const waited = gate()
@@ -38,7 +38,8 @@ const world = (on: On, drop = false) => {
   on('turn.start', (_, e) => ({ turnId: e.turnId }))
   on('session.id', async () => { entered.open(); await release.wait; return { value: 'sess-1' } })
   on('session.cwd', () => ({ value: '/work/first' }))
-  on('prompt.submit', (_, e) => {
+  on('prompt.submit', async (_, e) => {
+    await hold?.wait
     if (drop) return { drop: 'refused' }
     status.push('working')
     return { text: e.text }
@@ -97,6 +98,21 @@ test('a queued prompt whose turn never starts (given back to the composer): the 
   await queuedOver($, 'turn-1')
   await interrupt($)
   await settle()
+  expect(w.runs).toEqual([])
+  w.waited.open()
+  await settle()
+  expect(w.runs).toEqual(['turn-1'])
+})
+
+test('a queued prompt still beneath the plugin when the turn is cut, then given back to the composer: the command still runs', OPT, async ($, on) => {
+  const hold = gate()
+  const w = world(on, false, hold)
+  w.release.open()
+  const queued = queuedOver($, 'turn-1')
+  await interrupt($)
+  await settle()
+  hold.open()
+  await queued
   expect(w.runs).toEqual([])
   w.waited.open()
   await settle()
