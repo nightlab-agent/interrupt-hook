@@ -9,6 +9,7 @@ set -e
 cd "$(dirname "$0")/.."
 claude plugin validate .
 claude plugin test .
+python3 -I tests/real-engine.py
 sh tests/typecheck.sh
 python3 -I tests/checklist.py
 python3 -I - <<'PY'

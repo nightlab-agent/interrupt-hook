@@ -23,13 +23,16 @@ export const timeoutMs = (value: unknown): number => {
 
 export const register: Register = (on, options) => {
   const command = String(options.command ?? '').trim()
-  // Prompts that went in, main-loop turns and session switches so far: an interrupt whose command has not started when
+  // Main-loop turns and session switches so far: an interrupt whose command has not started when
   // one of these comes is stale. It only counts up: a drop taken off it could cancel the prompt that came after.
   let moves = 0
   // Each prompt gets a number; those a plugin beneath is still deciding on stay here. One that came after the interrupt
   // may be writing "working" now, so it stops the command as a prompt already in does.
   let submitted = 0
   const deciding = new Set<number>()
+  // The newest prompt that went in with no turn running. Kept by number: one that returns late, after its own turn was
+  // cut, is older than that turn's end and stops nothing.
+  let accepted = 0
   // How many prompts are held over each running turn. Their UserPromptSubmit hooks ran or are running, so when the turn is cut
   // one's own turn may be about to start.
   const held = new Map<string, number>()
@@ -44,7 +47,7 @@ export const register: Register = (on, options) => {
       const entered = await next(e)
       // Over a running turn its own turn.start says so: it may yet go back to the composer, and the command should run.
       if (entered.drop === undefined) {
-        if (over === undefined) moves++
+        if (over === undefined) accepted = Math.max(accepted, id)
       // Dropped beneath: no turn is coming.
       } else if (over !== undefined && held.has(over)) {
         const left = (held.get(over) ?? 1) - 1
@@ -100,7 +103,7 @@ export const register: Register = (on, options) => {
           }
         }
         // The person moved on during the lookups or the wait: "idle" would land after "working", or under the wrong session.
-        if (moves !== movesAtEnd || [...deciding].some(id => id > submittedAtEnd)) return
+        if (moves !== movesAtEnd || accepted > submittedAtEnd || [...deciding].some(id => id > submittedAtEnd)) return
         const init = { stdin: JSON.stringify(payload) + '\n', timeoutMs: timeoutMs(options.timeout) }
         let result: { exitCode: number; stderr: string }
         try {

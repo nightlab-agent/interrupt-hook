@@ -83,7 +83,7 @@ Nothing. Whatever your command writes is up to your command.
 - `turn.complete`: after Claude Code has ended the turn, if it was a turn of
   the main conversation (not a subagent's) and it ended because you
   interrupted it, runs your command. It never changes how the turn ended.
-- `prompt.submit` and `turn.start`: count your prompts and the main
+- `prompt.submit` and `turn.start`: mark your prompts and the main
   conversation's turns. If you send your next prompt before your command has
   started, the command is skipped, so it cannot write "idle" after your next
   prompt's "working". A command already running when you send the prompt still
@@ -130,7 +130,7 @@ session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with
 what to install; it never skips.
 
-That runs `claude plugin validate .`, `claude plugin test .` (46 tests
+That runs `claude plugin validate .`, `claude plugin test .` (48 tests
 through the test runner Claude Code ships for plugins, with a mocked process
 runner), a type check with `tsc --noEmit` against Claude Code's declarations,
 a checklist of rules that Anthropic's plugin directory raised on earlier
