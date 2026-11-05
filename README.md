@@ -130,7 +130,7 @@ session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with
 what to install; it never skips.
 
-That runs `claude plugin validate .`, `claude plugin test .` (48 tests
+That runs `claude plugin validate .`, `claude plugin test .` (59 tests
 through the test runner Claude Code ships for plugins, with a mocked process
 runner), a type check with `tsc --noEmit` against Claude Code's declarations,
 a checklist of rules that Anthropic's plugin directory raised on earlier
