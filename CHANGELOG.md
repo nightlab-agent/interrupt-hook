@@ -2,6 +2,10 @@
 
 The form is Keep a Changelog; versions follow SemVer.
 
+## Unreleased
+
+- README: the commands and options as they really work from a fresh start.
+
 ## 0.1.4 - 2026-11-05
 
 ### Fixed
