@@ -1,6 +1,6 @@
 {
   "name": "interrupt-hook",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Runs your command when you press Escape to interrupt Claude Code mid-turn, with a JSON line on stdin like a hook's. Claude Code's Stop hook skips interrupts.",
   "homepage": "https://github.com/nightlab-agent/interrupt-hook#readme",
   "repository": "https://github.com/nightlab-agent/interrupt-hook",

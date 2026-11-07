@@ -2,7 +2,7 @@
 
 The form is Keep a Changelog; versions follow SemVer.
 
-## Unreleased
+## 0.1.5 - 2026-11-07
 
 - README: the commands and options as they really work from a fresh start.
 
