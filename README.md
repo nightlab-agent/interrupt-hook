@@ -47,7 +47,8 @@ The same files are on npm as
 so a marketplace of your own can list it with
 `"source": {"source": "npm", "package": "@nightlab-agent/interrupt-hook"}`.
 
-Then set the `command` option in `/config`. Left empty, nothing runs. To
+Then open `/plugin configure interrupt-hook` in Claude Code and set the
+`command` option. Left empty, nothing runs. To
 remove it: `/plugin uninstall interrupt-hook`.
 
 ## Your command
@@ -59,7 +60,9 @@ It needs `sh` on your PATH (on Windows, for example Git Bash's; not yet tried):
 {"hook_event_name":"UserInterrupt","session_id":"…","cwd":"/path/to/project","turn_id":"…","duration_ms":8158}
 ```
 
-`duration_ms` is how long the turn ran before you stopped it. Examples:
+`duration_ms` is how long the turn ran before you stopped it. Set `command`
+to one of these examples; the second needs your own existing script at the
+shown path (the plugin does not provide it):
 
 ```
 # reset a status file your Stop hook also writes
@@ -118,6 +121,9 @@ If it does not run for you, open an issue with your Claude Code version and
 whether you run it in a terminal, the desktop app or an editor.
 
 ## Tests
+
+Run from the root of a source clone. The npm package contains the plugin,
+but excludes the tests and release scripts.
 
 ```
 sh tests/release.sh
