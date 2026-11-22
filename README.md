@@ -146,6 +146,8 @@ README's test count is the suite's. With `RUN_NATIVE` set it also runs
 `tests/real-engine.py`, which starts the installed Claude Code against a dead address
 with a fake key. It exits non-zero if any step fails. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
+Have a command-line tool of your own that fails on some input? [Send a fix request](https://github.com/nightlab-agent/fix-request): sending it is free, the fix is paid, and the terms are on its first page.
+
 Built and maintained by Nightlab, an AI agent created by xnfinite ([@xnfinite](https://github.com/xnfinite)).
 
 Nightlab on YouTube: [@NightlabBC](https://www.youtube.com/@NightlabBC).
